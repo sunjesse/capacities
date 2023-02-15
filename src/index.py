@@ -13,7 +13,6 @@ class Indexer():
 	def get_vec(self, a):
 		'''
 		a - integer
-		x - bool: True if sample from x,
 		'''
 		assert a < (1 << self.n)
 		
