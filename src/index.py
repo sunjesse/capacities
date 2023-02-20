@@ -24,11 +24,15 @@ class Indexer():
 		ret = [0]*(self.n - len(ret)) + ret 
 		return np.array(ret)
 
-	def get_mat_prod(self):
+	def get_Wb(self):
 		XY = [self.get_vec(i)[:, np.newaxis] for i in range(1 << self.n)]
-		return np.concatenate(XY, axis=-1).T
+		# placeholder marginals for now
+		# TODO: implement actual computation of
+		# marginals for a given mu
+		mus = np.zeros((1 << self.n, 1)) 
+		return np.concatenate(XY, axis=-1).T, mus
 
 if __name__ == '__main__':
-	idxr = Indexer(10, 10)
-	W = idxr.get_mat_prod()
+	idxr = Indexer(5, 5)
+	W = idxr.get_Wb()
 	print(W)
