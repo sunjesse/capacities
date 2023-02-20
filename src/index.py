@@ -32,15 +32,6 @@ class Indexer():
 		nus = np.zeros((1 << self.n, 1)) 
 		return np.concatenate(XY, axis=-1).T, nus
 
-	def is_subset(self, a, b):
-		'''
-		Given bit rep of a and b,
-		returns if a is subset of b.
-		
-		a, b - integers
-		'''
-		return a & b == a
-
 if __name__ == '__main__':
 	idxr = Indexer(5, 5)
 	W = idxr.get_Wb()
