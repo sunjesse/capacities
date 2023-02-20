@@ -1,5 +1,3 @@
-from collections import defaultdict
-from functools import lru_cache
 import itertools
 import numpy as np
 
@@ -9,7 +7,6 @@ class Indexer():
 		self.ny = ny
 		self.n = self.nx + self.ny
 
-	@lru_cache(512)
 	def get_vec(self, a):
 		'''
 		a - integer
