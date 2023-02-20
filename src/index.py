@@ -21,13 +21,25 @@ class Indexer():
 		ret = [0]*(self.n - len(ret)) + ret 
 		return np.array(ret)
 
-	def get_Wb(self):
+	def get_Wb(self, nu=None):
 		XY = [self.get_vec(i)[:, np.newaxis] for i in range(1 << self.n)]
 		# placeholder marginals for now
 		# TODO: implement actual computation of
 		# marginals for a given mu
-		mus = np.zeros((1 << self.n, 1)) 
-		return np.concatenate(XY, axis=-1).T, mus
+		def marginals():
+			raise NotImplementedError
+
+		nus = np.zeros((1 << self.n, 1)) 
+		return np.concatenate(XY, axis=-1).T, nus
+
+	def is_subset(self, a, b):
+		'''
+		Given bit rep of a and b,
+		returns if a is subset of b.
+		
+		a, b - integers
+		'''
+		return a & b == a
 
 if __name__ == '__main__':
 	idxr = Indexer(5, 5)
