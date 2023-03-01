@@ -2,6 +2,7 @@ import numpy as np
 import cvxpy as cp
 import argparse
 from index import Indexer
+from mobius import mobius
 
 # arguments
 parser = argparse.ArgumentParser()
@@ -19,7 +20,7 @@ B, zeros = indexer.get_ineq()
 M = cp.Variable((dim, 1))
 
 # A := Mobius transform
-A = np.random.rand(dim, dim)
+A = mobius(dim)
 constraints = [W @ M == b, B @ M >= zeros]
 
 if not args.lp:
