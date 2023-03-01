@@ -21,7 +21,7 @@ M = cp.Variable((dim, 1))
 
 # A := Mobius transform
 A = mobius(dim)
-constraints = [W @ M == b, B @ M >= zeros]
+constraints = [B @ M >= zeros, np.ones((1, dim))@M == 1]#, W @ M == b]
 
 if not args.lp:
 	print("Minimizing L_1 norm...")

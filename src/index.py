@@ -10,7 +10,8 @@ class Indexer():
 
 	def get_vec(self, a):
 		'''
-		a - integer
+		:type a: int
+		:rtype: np.array, np.array
 		'''
 		assert a < (1 << self.n)
 		
@@ -23,6 +24,10 @@ class Indexer():
 		return np.array(ret)
 
 	def get_Wb(self, nu=None):
+		'''
+		:type nu: np.array (optional)
+		:rtype: np.array, np.array
+		'''
 		XY = [self.get_vec(i)[:, np.newaxis] for i in range(1 << self.n)]
 		# placeholder marginals for now
 		# TODO: implement actual computation of
@@ -34,6 +39,9 @@ class Indexer():
 		return np.concatenate(XY, axis=-1).T, nus
 
 	def get_ineq(self):
+		'''
+		:rtype: np.array, np.array
+		'''
 		B = []
 		seen = set()
 		for b in range(1, 1 << self.n):

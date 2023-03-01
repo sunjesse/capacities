@@ -17,8 +17,11 @@ def hamming(n):
       return c
 
 def mobius(n):
-	# compute mobius transform of set function f on a.
-	# a is an integer / bitmask.
+	"""
+	Returns corresponding Mobius transform transformation.
+	:type n: int
+	:rtype: int
+	"""
 	A = np.zeros((n, n))
 	for i in range(n):
 		for j in range(i+1):
