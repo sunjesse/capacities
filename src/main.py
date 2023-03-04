@@ -9,19 +9,23 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--lp', action='store_true')
 args = parser.parse_args()
 
- 
 dimX = 3
 dimY = 3
 dim = dimX*dimY
 
+# marginal capacities
+mu = np.ones((dimX, 1))
+nu = np.ones((dimY, 1))
+
 indexer = Indexer(dimX, dimY)
-W, b = indexer.get_Wb()
+W, b = indexer.get_eq(mu, nu)
 B, zeros = indexer.get_ineq()
 M = cp.Variable((dim, 1))
 
+print(W, b)
 # A := Mobius transform
 A = mobius(dim)
-constraints = [B @ M >= zeros, np.ones((1, dim))@M == 1]#, W @ M == b]
+constraints = [B @ M >= zeros, np.ones((1, dim))@M == 1, W @ M == b]
 
 if not args.lp:
 	print("Minimizing L_1 norm...")
