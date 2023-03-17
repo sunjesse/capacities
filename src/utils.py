@@ -1,5 +1,3 @@
-import numpy as np
-
 def is_subset(a, b):
 	"""
 	Given a, b, returns True if a iff subset of b.
