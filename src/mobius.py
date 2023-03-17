@@ -28,3 +28,8 @@ def mobius(n):
 			if is_subset(j, i):
 				A[i][j] = (-1)**hamming(i^j)
 	return A
+	
+def composition(x):
+	dimX = x.shape[0]
+	A = mobius(dimX)
+	return np.sum(np.abs(A @ x))

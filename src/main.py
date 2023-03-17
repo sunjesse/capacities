@@ -1,45 +1,34 @@
 import numpy as np
-import cvxpy as cp
 import argparse
-from index import Indexer
-from mobius import mobius
+from experiment import Experiment
+from mobius import composition
+import matplotlib.pyplot as plt
+from datetime import datetime
+from tqdm import tqdm
 
 # arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--lp', action='store_true')
+parser.add_argument('--N', default=1000, type=int,  help="number of trials (default: 1000)")
+parser.add_argument('--dimX', default=3, type=int,  help="dimension of X (default: 3)")
+parser.add_argument('--dimY', default=3, type=int,  help="dimension of Y (default: 3)")
+parser.add_argument('--verbose', action='store_true', help="output verbose (default: False)")
 args = parser.parse_args()
 
-dimX = 3
-dimY = 3
-dim = dimX*dimY
-
-# marginal capacities
-mu = np.ones((dimX, 1))/dimX
-nu = np.ones((dimY, 1))/dimY
-
-indexer = Indexer(dimX, dimY)
-W, b = indexer.get_eq(mu, nu)
-B, zeros = indexer.get_ineq()
-M = cp.Variable((dim, 1))
-
-# A := Mobius transform
-A = mobius(dim)
-constraints = [B @ M >= zeros, W @ M == b, np.ones((1, dim)) @ M == 1]
-
-if not args.lp:
-	print("Minimizing L_1 norm...")
-	l1 = lambda C, x : cp.sum(cp.abs(C @ x))
-
-	prob = cp.Problem(cp.Minimize(l1(A, M)), constraints)
-	sol = prob.solve()
-	print(f"Solution: {M.value} with value {sol}.")
-
-else:
-	print("Minimizing LP using L_1 norm trick...")
-	c = np.ones((dim, 1))
-	t = cp.Variable((dim, 1))
-	
-	prob = cp.Problem(cp.Minimize(c.T @ t),
-					  constraints + [A@M <= t, A@M >= -t])
-	sol = prob.solve()
-	print(f"Solution: {M.value} with value {sol}.")
+if __name__ == '__main__':
+	test = Experiment(dimX=args.dimX,
+					  dimY=args.dimY)
+	x, y = [], []
+	for i in tqdm(range(args.N)):
+		mu, nu, M, sol = test.random(lp=args.lp, verbose=args.verbose)
+		mu_comp = composition(mu)
+		nu_comp = composition(nu)
+		M_comp = composition(M.value)
+		x.append(mu_comp + nu_comp)	
+		y.append(M_comp)
+	fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+	plt.scatter(x, y)
+	ax.set_xlabel("comp_norm(mu) + comp_norm(nu)")
+	ax.set_ylabel("comp_norm(M)")
+	plt.savefig(fname=f"./results/{datetime.now()}_N{args.N}_dimX{args.dimX}_dimY{args.dimY}.png")
+	print("Saved figure!")
