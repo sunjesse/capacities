@@ -24,7 +24,7 @@ if __name__ == '__main__':
 		mu_comp = composition(mu)
 		nu_comp = composition(nu)
 		M_comp = composition(M.value)
-		x.append(mu_comp + nu_comp)	
+		x.append(mu_comp+nu_comp)	
 		y.append(M_comp)
 	fig, ax = plt.subplots(1, 1, figsize=(10, 5))
 	plt.scatter(x, y)

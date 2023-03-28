@@ -1,12 +1,17 @@
 import itertools
 import numpy as np
 from utils import *
+import os
 
 class Indexer():
 	def __init__(self, nx, ny):
 		self.nx = nx
 		self.ny = ny
 		self.n = self.nx*self.ny
+		self.id_eq = f"./cache/x{nx}_y{ny}_eq.npy"
+		self.id_ineq = f"./cache/x{nx}_y{ny}_ineq.npy"
+		self.load_eq = os.path.isfile(self.id_eq)
+		self.load_ineq = os.path.isfile(self.id_ineq)
 
 	def get_vec(self, a, sz):
 		'''
@@ -30,31 +35,39 @@ class Indexer():
 		:rtype: np.array, np.array
 		'''
 		mu_dim, nu_dim = mu.shape[0], nu.shape[0]
+		
+		if self.load_eq: rows = np.load(self.id_eq)
+		else: rows = []
 
-		rows = []
 		b = []
 		# G x Y
 		for i in range(1 << mu_dim):
 			v = self.get_vec(i, sz=mu_dim)
-			_row = np.zeros((self.n))
-			for j in range(self.n):
-				if v[j//nu_dim] == 1:
-					_row[j] = 1
 			b.append(v.T @ mu)
-			rows.append(_row[np.newaxis, :])
+			
+			if not self.load_eq:
+				_row = np.zeros((self.n))
+				for j in range(self.n):
+					if v[j//nu_dim] == 1:
+						_row[j] = 1
+				rows.append(_row[np.newaxis, :])
 		
 		# X x F
 		for i in range(1 << nu_dim):
 			v = self.get_vec(i, sz=nu_dim)
-			_row = np.zeros((self.n))
-			for j in range(self.n):
-				if v[j % mu_dim] == 1:
-					_row[j] = 1
 			b.append([v.T @ nu])
-			rows.append(_row[np.newaxis, :])
 
-		
-		rows = np.concatenate(rows, axis=0)
+			if not self.load_eq:
+				_row = np.zeros((self.n))
+				for j in range(self.n):
+					if v[j % mu_dim] == 1:
+						_row[j] = 1
+				rows.append(_row[np.newaxis, :])
+
+		if not self.load_eq:
+			rows = np.concatenate(rows, axis=0)
+			np.save(self.id_eq, rows)
+
 		b = np.array(b, dtype=object)
 		return rows, b
 
@@ -62,6 +75,10 @@ class Indexer():
 		'''
 		:rtype: np.array, np.array
 		'''
+		if self.load_ineq:
+			B = np.load(self.id_ineq)
+			return B, np.zeros((B.shape[0], 1))
+			
 		B = []
 		seen = set()
 		for b in range(1, 1 << self.n):
@@ -73,7 +90,9 @@ class Indexer():
 				if x in seen: continue
 				B.append(self.get_vec(x, sz=self.n)[:, np.newaxis])
 				seen.add(x)
-		return np.concatenate(B, axis=-1).T, np.zeros((len(B), 1))
+		_B = np.concatenate(B, axis=-1).T
+		np.save(self.id_ineq, _B)
+		return _B, np.zeros((len(B), 1))
 
 
 if __name__ == '__main__':
