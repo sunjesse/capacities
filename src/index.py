@@ -60,7 +60,7 @@ class Indexer():
 			if not self.load_eq:
 				_row = np.zeros((self.n))
 				for j in range(self.n):
-					if v[j % mu_dim] == 1:
+					if v[j % nu_dim] == 1:
 						_row[j] = 1
 				rows.append(_row[np.newaxis, :])
 
@@ -112,6 +112,7 @@ m_0		m_1		m_2		m_3		m_4		m_5	   m_6	 m_7	m_8
 Let G = {1, 3}
 {1, 3} x {A,B} = (1, A), (1, B), (3, A), (3, B)  = m_5, m_4, m_1, m_0 = mu_2 + mu_1
 
-Let F = {A, C}, {}
+v = '11'
+Let F = {A, C}, {} 111111
 {1,2,3} x {A, C} = (1, A), (1, C), (2, A), (2, C), (3, A), (3, C) = m_0, m_2, m_3, m_5, m_6, m_8
 '''
