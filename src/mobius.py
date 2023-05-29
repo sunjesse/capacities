@@ -22,8 +22,8 @@ def mobius(n):
 	:type n: int
 	:rtype: int
 	"""
-	A = np.zeros((n, n))
-	for i in range(n):
+	A = np.zeros((1<<n, 1<<n))
+	for i in range(1<<n):
 		for j in range(i+1):
 			if is_subset(j, i):
 				A[i][j] = (-1)**hamming(i^j)
