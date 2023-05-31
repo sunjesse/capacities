@@ -10,8 +10,6 @@ class Indexer():
 		self.n = self.nx*self.ny
 		self.id_eq = f"./cache/x{nx}_y{ny}_eq.npy"
 		self.id_ineq = f"./cache/x{nx}_y{ny}_ineq.npy"
-		self.load_eq = False #os.path.isfile(self.id_eq)
-		self.load_ineq = False #os.path.isfile(self.id_ineq)
 
 	def get_vec(self, a, sz):
 		'''
@@ -35,12 +33,13 @@ class Indexer():
 		:rtype: np.array, np.array
 		'''
 		mu_dim, nu_dim = mu.shape[0], nu.shape[0]
+		load_eq = os.path.isfile(self.id_eq)
 		
-		if self.load_eq: rows = np.load(self.id_eq)
+		if load_eq: rows = np.load(self.id_eq)
 		else: rows = []
 
 		b = []
-		if False: # not self.load_eq:
+		if not load_eq:
 			# empty set equals zero equality
 			r = np.zeros((1 << self.n))
 			r[0] = 1
@@ -58,7 +57,7 @@ class Indexer():
 		for x in range(mu_dim):
 			# bit mask x
 			b += [mu[x]]	
-			if self.load_eq: continue
+			if load_eq: continue
 			r = 0
 			if x > 0:
 				for z in range(0, self.nx):
@@ -72,7 +71,7 @@ class Indexer():
 		# X x F
 		for y in range(nu_dim):
 			b += [nu[y]]
-			if self.load_eq: continue
+			if load_eq: continue
 			r = 0
 			if y > 0:
 				for z in range(0, self.ny):
@@ -85,7 +84,7 @@ class Indexer():
 			_row[r] = 1
 			rows.append(_row[np.newaxis, :])
 
-		if not self.load_eq:
+		if not load_eq:
 			rows = np.concatenate(rows, axis=0)
 			np.save(self.id_eq, rows)
 
@@ -96,7 +95,8 @@ class Indexer():
 		'''
 		:rtype: np.array, np.array
 		'''
-		if self.load_ineq:
+		load_ineq = os.path.isfile(self.id_ineq)
+		if load_ineq:
 			B = np.load(self.id_ineq)
 			return B, np.zeros((B.shape[0], 1))
 			
@@ -120,21 +120,3 @@ if __name__ == '__main__':
 	print(W)
 	print(b)
 	print(W.shape, b.shape)
-
-'''
- (mu_2, mu_1)
- (1,2,3), (A,B,C)
- (1,A), (1,B), (1, C), (2,A), (2, B), (2, C), (3,A), (3,B), (3, C)
-m_0		m_1		m_2		m_3		m_4		m_5	   m_6	 m_7	m_8
-
-Let G = {1, 3}
-{1, 3} x {A,B} = (1, A), (1, B), (3, A), (3, B)  = m_5, m_4, m_1, m_0 = mu_2 + mu_1
-
-v = '11'
-Let F = {A, C}, {} 111111
-{1,2,3} x {A, C} = (1, A), (1, C), (2, A), (2, C), (3, A), (3, C) = m_0, m_2, m_3, m_5, m_6, m_8
-
-(1), (A, B, C)
-
-
-'''

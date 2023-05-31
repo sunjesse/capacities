@@ -42,7 +42,6 @@ class Experiment():
 
 		# A := Mobius transform
 		A = mobius(1 << self.dim)
-		print(B.shape, W.shape)
 		constraints = [B @ M >= zeros, W @ M == b]
 		if get_poly:
 			B_ = []
