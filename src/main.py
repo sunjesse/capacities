@@ -14,15 +14,19 @@ parser.add_argument('--dimX', default=3, type=int,  help="dimension of X (defaul
 parser.add_argument('--dimY', default=3, type=int,  help="dimension of Y (default: 3)")
 parser.add_argument('--verbose', action='store_true', help="output verbose (default: False)")
 parser.add_argument('--poly', action='store_true', help="generate poly (default: False)")
+parser.add_argument('--ctype', default="sm", help="capacity type : {a, sa, sm} for add, superadd, supermod. (default: sa)") 
 args = parser.parse_args()
 
 if __name__ == '__main__':
+	for k,v in sorted(vars(args).items()):
+		print(f"{k}: {v}")
+
 	test = Experiment(dimX=args.dimX,
 					  dimY=args.dimY,
 					  N=args.N)
 	x, y = [], []
 	for i in tqdm(range(args.N)):
-		mu, nu, M, sol = test.random(lp=args.lp, verbose=args.verbose, get_poly=args.poly)
+		mu, nu, M, sol = test.random(lp=args.lp, verbose=args.verbose, get_poly=args.poly, type=args.ctype)
 		mu_comp = composition(mu)
 		nu_comp = composition(nu)
 		M_comp = composition(M.value)
@@ -32,6 +36,6 @@ if __name__ == '__main__':
 	plt.scatter(x, y)
 	ax.set_xlabel("comp_norm(mu) + comp_norm(nu)")
 	ax.set_ylabel("comp_norm(M)")
-	plt.savefig(fname=f"./results/{datetime.now()}_N{args.N}_dimX{args.dimX}_dimY{args.dimY}.png")
+	plt.savefig(fname=f"./results/{datetime.now()}_N{args.N}_dimX{args.dimX}_dimY{args.dimY}_{args.ctype}.png")
 	print("Saved figure!")
 	print(f"{test.get_percentage_tight()}% of inequalities are tight.")

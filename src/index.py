@@ -33,7 +33,7 @@ class Indexer():
 		:rtype: np.array, np.array
 		'''
 		mu_dim, nu_dim = mu.shape[0], nu.shape[0]
-		load_eq = os.path.isfile(self.id_eq)
+		load_eq = False #os.path.isfile(self.id_eq)
 		
 		if load_eq: rows = np.load(self.id_eq)
 		else: rows = []
@@ -95,7 +95,7 @@ class Indexer():
 		'''
 		:rtype: np.array, np.array
 		'''
-		load_ineq = os.path.isfile(self.id_ineq)
+		load_ineq = False #os.path.isfile(self.id_ineq)
 		if load_ineq:
 			B = np.load(self.id_ineq)
 			return B, np.zeros((B.shape[0], 1))
