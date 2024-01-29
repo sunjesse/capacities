@@ -3,7 +3,7 @@ import numpy as np
 from utils import *
 import os
 
-class Indexer():
+class Indexer:
 	def __init__(self, nx, ny):
 		self.nx = nx
 		self.ny = ny
