@@ -5,7 +5,7 @@ from mobius import mobius
 from utils import subset_pairs, disjoint_subset_pairs
 import cdd
 
-class Experiment():
+class Experiment:
 	def __init__(self, dimX, dimY, N):
 		self.dimX = dimX
 		self.dimY = dimY
