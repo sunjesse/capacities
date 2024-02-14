@@ -18,24 +18,24 @@ parser.add_argument('--ctype', default="sm", help="capacity type : {a, sa, sm} f
 args = parser.parse_args()
 
 if __name__ == '__main__':
-	for k,v in sorted(vars(args).items()):
-		print(f"{k}: {v}")
+    for k,v in sorted(vars(args).items()):
+        print(f"{k}: {v}")
 
-	test = Experiment(dimX=args.dimX,
-					  dimY=args.dimY,
-					  N=args.N)
-	x, y = [], []
-	for i in tqdm(range(args.N)):
-		mu, nu, M, sol = test.random(lp=args.lp, verbose=args.verbose, get_poly=args.poly, type=args.ctype)
-		mu_comp = composition(mu)
-		nu_comp = composition(nu)
-		M_comp = composition(M.value)
-		x.append(mu_comp+nu_comp)	
-		y.append(M_comp)
-	fig, ax = plt.subplots(1, 1, figsize=(10, 5))
-	plt.scatter(x, y)
-	ax.set_xlabel("comp_norm(mu) + comp_norm(nu)")
-	ax.set_ylabel("comp_norm(M)")
-	plt.savefig(fname=f"./results/{datetime.now()}_N{args.N}_dimX{args.dimX}_dimY{args.dimY}_{args.ctype}.png")
-	print("Saved figure!")
-	print(f"{test.get_percentage_tight()}% of inequalities are tight.")
+    test = Experiment(dimX=args.dimX,
+                      dimY=args.dimY,
+                      N=args.N)
+    x, y = [], []
+    for i in tqdm(range(args.N)):
+        mu, nu, M, sol = test.random(lp=args.lp, verbose=args.verbose, get_poly=args.poly, type=args.ctype)
+        mu_comp = composition(mu)
+        nu_comp = composition(nu)
+        M_comp = composition(M.value)
+        x.append(mu_comp+nu_comp)   
+        y.append(M_comp)
+    fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+    plt.scatter(x, y)
+    ax.set_xlabel("comp_norm(mu) + comp_norm(nu)")
+    ax.set_ylabel("comp_norm(M)")
+    plt.savefig(fname=f"./results/{datetime.now()}_N{args.N}_dimX{args.dimX}_dimY{args.dimY}_{args.ctype}.png")
+    print("Saved figure!")
+    print(f"{test.get_percentage_tight()}% of inequalities are tight.")

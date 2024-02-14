@@ -17,19 +17,19 @@ def hamming(n):
       return c
 
 def mobius(n):
-	"""
-	Returns corresponding Mobius transform transformation.
-	:type n: int
-	:rtype: int
-	"""
-	A = np.zeros((n, n))
-	for i in range(n):
-		for j in range(i+1):
-			if is_subset(j, i):
-				A[i][j] = (-1)**hamming(i^j)
-	return A
-	
+    """
+    Returns corresponding Mobius transform transformation.
+    :type n: int
+    :rtype: int
+    """
+    A = np.zeros((n, n))
+    for i in range(n):
+        for j in range(i+1):
+            if is_subset(j, i):
+                A[i][j] = (-1)**hamming(i^j)
+    return A
+    
 def composition(x):
-	dimX = x.shape[0]
-	A = mobius(dimX)
-	return np.sum(np.abs(A @ x))
+    dimX = x.shape[0]
+    A = mobius(dimX)
+    return np.sum(np.abs(A @ x))
