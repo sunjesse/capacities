@@ -9,11 +9,9 @@ def hamming(n):
       :type n: int
       :rtype: int
       """
-      n = str(bin(n))
       c = 0
-      for i in n:
-         if i == "1":
-            c += 1
+      while n > 0:
+          if n & 1 == 1: c += 1
       return c
 
 def mobius(n):
